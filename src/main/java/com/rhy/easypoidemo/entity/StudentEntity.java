@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
  * @author Rhy
  * @title 学生实体类
  * @description 学生实体类
+ * http://doc.wupaas.com/docs/easypoi/easypoi-1c0u96flii98v 注解每一项含义
  * @createTime 2020年09月12日 13:27:00
  * @modifier：Rhy
  * @modification_time：2020-09-12 13:27

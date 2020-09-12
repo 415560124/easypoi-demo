@@ -26,7 +26,9 @@ class EasypoiDemoApplicationTests {
      */
     @Test
     void contextLoads() throws IOException {
-        //组装数据
+        /**
+         * 组装数据 - 这里主要看 {@link StudentEntity}类中的注解理解含义
+         */
         List<StudentEntity> studentEntities = new ArrayList<>(10);
         for(int i=1;i<=10;i++){
             StudentEntity studentEntity = new StudentEntity(
