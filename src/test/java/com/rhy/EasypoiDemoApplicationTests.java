@@ -2,6 +2,7 @@ package com.rhy;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import com.rhy.easypoidemo.entity.CompanyEntity;
 import com.rhy.easypoidemo.entity.CourseEntity;
 import com.rhy.easypoidemo.entity.StudentEntity;
 import com.rhy.easypoidemo.entity.TeacherEntity;
@@ -86,6 +87,26 @@ class EasypoiDemoApplicationTests {
 
     }
 
+    /**
+     * 注解导出图片
+     */
+    @Test
+    void annotationImgExport() throws IOException {
+        List<CompanyEntity> companyEntities = new ArrayList<>();
+        for(int i=1;i<=10;i++){
+            companyEntities.add(
+                    new CompanyEntity()
+                    .setName("测试公司"+i)
+                    .setImg(BASE_URL+"\\logo.jpg")
+                    .setAddress("测试地址"+i)
+            );
+        }
+
+        //导出Excel文件对象
+        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("公司列表","公司"),CompanyEntity.class,companyEntities);
+        //写入文件逻辑
+        exportFile(workbook,"annotation-company-demo.xls");
+    }
     /**
      * 写入文件
      * @param workbook
