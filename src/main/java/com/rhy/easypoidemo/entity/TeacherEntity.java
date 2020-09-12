@@ -16,11 +16,13 @@ import java.io.Serializable;
  * @modifier：Rhy
  * @modification_time：2020-09-12 13:14
  */
-@ExcelTarget("teacherEntry")
+@ExcelTarget("TeacherEntity")
 @Getter
 @Setter
 @Accessors(chain=true) // 可以链式调用 setter
-public class Teacher implements Serializable {
-    @Excel(name = "主讲老师_teacherEntity,代课老师_absent", orderNum = "1", mergeVertical = true,needMerge=true,isImportField = "true_major,true_absent")
+public class TeacherEntity implements Serializable {
+    @Excel(name = "老师编号" , orderNum = "2",needMerge = true)
+    private Integer id;
+    @Excel(name = "主讲老师_teacherEntity,代课老师_absent", orderNum = "1",needMerge = true,isImportField = "true_major,true_absent")
     private String name;
 }

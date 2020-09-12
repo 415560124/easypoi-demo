@@ -19,11 +19,14 @@ import java.time.LocalDateTime;
  * @modifier：Rhy
  * @modification_time：2020-09-12 13:27
  */
-@ExcelTarget("student")
+@ExcelTarget("StudentEntity")
 @Getter
 @Setter
 @Accessors(chain=true) // 可以链式调用 setter
 public class StudentEntity {
+    public StudentEntity() {
+    }
+
     public StudentEntity(Integer id, String name, int sex, LocalDate birthday, LocalDateTime registrationDate) {
         this.id = id;
         this.name = name;
@@ -44,17 +47,17 @@ public class StudentEntity {
     /**
      * 学生性别
      */
-    @Excel(name = "学生姓名" , replace = {"男_1","女_2"} , suffix = "生" , isImportField = "true")
+    @Excel(name = "学生姓名" , replace = {"男_1","女_2"} , suffix = "生" , isImportField = "true_st")
     private int  sex;
     /**
      * 生日
      */
-    @Excel(name = "出生日期" , databaseFormat = "yyyyMMdd" , format = "yyyy-MM-dd" , isImportField = "true" , width = 20)
+    @Excel(name = "出生日期" , databaseFormat = "yyyyMMdd" , format = "yyyy-MM-dd" , isImportField = "true_st" , width = 20)
     private LocalDate birthday;
     /**
      * 进校日期
      */
-    @Excel(name = "进校日期" ,databaseFormat = "yyyyMMddHHmmss" , format = "yyyy-MM-dd HH:mm:ss" , isImportField = "true" , width = 30)
+    @Excel(name = "进校日期" ,databaseFormat = "yyyyMMddHHmmss" , format = "yyyy-MM-dd HH:mm:ss" , isImportField = "true_st" , width = 30)
     private LocalDateTime registrationDate;
 
 }
