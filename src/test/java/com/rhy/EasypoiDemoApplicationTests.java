@@ -2,6 +2,7 @@ package com.rhy;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import com.rhy.easypoidemo.entity.CompanyEntity;
 import com.rhy.easypoidemo.entity.CourseEntity;
 import com.rhy.easypoidemo.entity.StudentEntity;
@@ -106,6 +107,41 @@ class EasypoiDemoApplicationTests {
         Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("公司列表","公司"),CompanyEntity.class,companyEntities);
         //写入文件逻辑
         exportFile(workbook,"annotation-company-demo.xls");
+    }
+
+    /**
+     * 代码注解导出
+     * @throws IOException
+     */
+    @Test
+    void sourceSimpleExport() throws IOException {
+        /**
+         * 组装数据 - 这里主要看 {@link StudentEntity}类中的注解理解含义
+         */
+        List<StudentEntity> studentEntities = new ArrayList<>(10);
+        for(int i=1;i<=10;i++){
+            StudentEntity studentEntity = new StudentEntity(
+                    i,
+                    "学生姓名"+i,
+                    i%2+1,
+                    LocalDate.of(1996,i,i+10),
+                    LocalDateTime.now(ZoneId.of("+8"))
+            );
+            studentEntities.add(studentEntity);
+        }
+        /**
+         * 组装excel字段数据 - 动态追加消除列
+         */
+        List<ExcelExportEntity> excelExportEntities = new ArrayList<>();
+        excelExportEntities.add(new ExcelExportEntity("学生姓名","name",40));
+        excelExportEntities.add(new ExcelExportEntity("学生性别","sex"));
+        excelExportEntities.add(new ExcelExportEntity("出生日期","birthday"));
+        excelExportEntities.add(new ExcelExportEntity("进校日期","registrationDate"));
+
+        //导出Excel文件对象
+        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("计算机一班学生","学生"),StudentEntity.class,studentEntities);
+        //写入文件逻辑
+        exportFile(workbook,"source-annotation-student-demo.xls");
     }
     /**
      * 写入文件
