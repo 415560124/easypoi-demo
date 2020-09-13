@@ -30,7 +30,7 @@ public class CourseEntity {
     /**
      * 课程名称
      */
-    @Excel(name = "课程名称",orderNum = "1",width = 25,needMerge = true)
+    @Excel(name = "课程名称",width = 25,needMerge = true)
     private String name;
     /**
      * 老师对象
@@ -40,7 +40,7 @@ public class CourseEntity {
     /**
      * 学生集合
      */
-    @ExcelCollection(name = "学生" , orderNum = "4")
+    @ExcelCollection(name = "学生")
     List<StudentEntity> studentEntities;
 
 }

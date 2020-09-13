@@ -42,7 +42,7 @@ public class StudentEntity {
     /**
      * 学生姓名
      */
-    @Excel(name = "学生姓名" , width = 30 , isImportField = "true")
+    @Excel(name = "学生姓名" , width = 30 )
     private String name;
     /**
      * 学生性别

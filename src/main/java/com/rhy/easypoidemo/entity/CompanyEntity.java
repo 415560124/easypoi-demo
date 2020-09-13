@@ -22,7 +22,7 @@ import lombok.experimental.Accessors;
 public class CompanyEntity {
     @Excel(name = "公司名" , width = 30)
     private String name;
-    @Excel(name = "公司Logo" , type = 2 , imageType = 1 , width = 40 , height = 80)
+    @Excel(name = "公司Logo URL" , type = 2 , imageType = 1 , width = 40 , height = 80)
     private String img;
     @Excel(name = "公司地址" , width = 50)
     private String address;

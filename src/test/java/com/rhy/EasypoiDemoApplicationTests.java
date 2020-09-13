@@ -24,6 +24,7 @@ import java.util.Random;
 
 @SpringBootTest
 class EasypoiDemoApplicationTests {
+    //System.getProperty("user.dir") - 获取当前项目注释
     private static final String BASE_URL = System.getProperty("user.dir")+"\\file";
     /**
      * 注解导出简单示例
@@ -118,6 +119,7 @@ class EasypoiDemoApplicationTests {
         /**
          * 组装数据 - 这里主要看 {@link StudentEntity}类中的注解理解含义
          */
+        //改成List<Map<String,Object>>
         List<StudentEntity> studentEntities = new ArrayList<>(10);
         for(int i=1;i<=10;i++){
             StudentEntity studentEntity = new StudentEntity(
@@ -134,12 +136,12 @@ class EasypoiDemoApplicationTests {
          */
         List<ExcelExportEntity> excelExportEntities = new ArrayList<>();
         excelExportEntities.add(new ExcelExportEntity("学生姓名","name",40));
-        excelExportEntities.add(new ExcelExportEntity("学生性别","sex"));
-        excelExportEntities.add(new ExcelExportEntity("出生日期","birthday"));
-        excelExportEntities.add(new ExcelExportEntity("进校日期","registrationDate"));
+//        excelExportEntities.add(new ExcelExportEntity("学生性别","sex"));
+//        excelExportEntities.add(new ExcelExportEntity("出生日期","birthday"));
+//        excelExportEntities.add(new ExcelExportEntity("进校日期","registrationDate"));
 
         //导出Excel文件对象
-        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("计算机一班学生","学生"),StudentEntity.class,studentEntities);
+        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("计算机一班学生","学生"),excelExportEntities,studentEntities);
         //写入文件逻辑
         exportFile(workbook,"source-annotation-student-demo.xls");
     }
