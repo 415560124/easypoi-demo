@@ -34,37 +34,76 @@ import java.util.Map;
 public class TestController {
     @GetMapping("download")
     public void testDownload(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
-        //拼装excel表头样式
-        List<ExcelExportEntity> entity = new ArrayList<ExcelExportEntity>();
-        //姓名
-        entity.add(new ExcelExportEntity("班级名称", "name"));
-        //性别
-        entity.add(new ExcelExportEntity("班级编号", "id"));
-        //学生集合
-        entity.add(new ExcelExportEntity("学生信息", "students"));
-        List<ExcelExportEntity> temp = new ArrayList<ExcelExportEntity>();
-        temp.add(new ExcelExportEntity("姓名", "name"));
-        temp.add(new ExcelExportEntity("性别", "sex"));
-
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map;
-        for (int i = 0; i < 10; i++) {
-            map = new HashMap<String, Object>();
-            map.put("name", "1" + i);
-            map.put("sex", "2" + i);
-
-            List<Map<String, Object>> tempList = new ArrayList<Map<String, Object>>();
-            tempList.add(map);
-            tempList.add(map);
-            map.put("students", tempList);
-
-            list.add(map);
+        /**
+         * 组装数据 - 这里主要看 {@link StudentEntity}类中的注解理解含义
+         */
+        //改成List<Map<String,Object>>
+        List<Map<String,Object>> studentEntities = new ArrayList<>(10);
+        //行数据
+        Map<String,Object> studentEntity = null;
+        //学生成绩数据
+        List<Map<String,Object>> studentScoreEntities = null;
+        //学生成绩行数据
+        Map<String,Object> studentScoreEntity = null;
+        for(int i=1;i<=10;i++){
+            studentEntity = new HashMap<>();
+            studentEntities.add(studentEntity);
+            studentEntity.put("name","学生姓名"+i);
+            studentEntity.put("sex",i%2+1);
+            studentEntity.put("birthday",LocalDate.of(1996,i,i+10));
+            studentEntity.put("registrationDate",LocalDateTime.now(ZoneId.of("+8")));
+            //学生分数
+            studentScoreEntities = new ArrayList<>();
+            studentEntity.put("scores",studentScoreEntities);
+            studentScoreEntity = new HashMap<>();
+            studentScoreEntities.add(studentScoreEntity);
+            studentScoreEntity.put("semester","上学期");
+            studentScoreEntity.put("chinese",96+i);
+            studentScoreEntity.put("math",60+i);
+            studentScoreEntity.put("english",76+i);
+            studentScoreEntity = new HashMap<>();
+            studentScoreEntities.add(studentScoreEntity);
+            studentScoreEntity.put("semester","下学期");
+            studentScoreEntity.put("chinese",95+i);
+            studentScoreEntity.put("math",79+i);
+            studentScoreEntity.put("english",66+i);
         }
+        /**
+         * 组装excel字段数据 - 动态追加消除列
+         */
+        List<ExcelExportEntity> excelExportEntities = new ArrayList<>();
+        //学生姓名列
+        ExcelExportEntity excelExportNameEntity = new ExcelExportEntity("学生姓名","name",25);
+        //需要合并
+        excelExportNameEntity.setNeedMerge(true);
+        excelExportEntities.add(excelExportNameEntity);
+        //学生性别列
+        ExcelExportEntity excelExportSexEntity = new ExcelExportEntity("学生性别","sex");
+        //需要合并
+        excelExportSexEntity.setNeedMerge(true);
+        //转换枚举
+        excelExportSexEntity.setReplace(new String[]{"男_1","女_2"});
+        //字段后缀
+        excelExportSexEntity.setSuffix("生");
+        excelExportEntities.add(excelExportSexEntity);
+//        excelExportEntities.add(new ExcelExportEntity("出生日期","birthday",20));
+//        excelExportEntities.add(new ExcelExportEntity("进校日期","registrationDate",40));
+        //学生成绩列集合
+        ExcelExportEntity excelExportEntityScore = new ExcelExportEntity("学生成绩","scores");
+        excelExportEntities.add(excelExportEntityScore);
+        //成绩列标题项
+        List<ExcelExportEntity> excelExportEntityChildrens = new ArrayList<>();
+        excelExportEntityChildrens.add(new ExcelExportEntity("学期","semester"));
+        excelExportEntityChildrens.add(new ExcelExportEntity("语文","chinese"));
+        excelExportEntityChildrens.add(new ExcelExportEntity("数学","math"));
+        excelExportEntityChildrens.add(new ExcelExportEntity("英语","english"));
+        //写入成绩相关标题项
+        excelExportEntityScore.setList(excelExportEntityChildrens);
 
-        ExportParams params = new ExportParams("2412312", "测试", ExcelType.XSSF);
+        ExportParams params = new ExportParams("计算机一班学生","学生");
         params.setFreezeCol(2);
-        modelMap.put(MapExcelConstants.MAP_LIST, list);
-        modelMap.put(MapExcelConstants.ENTITY_LIST, entity);
+        modelMap.put(MapExcelConstants.MAP_LIST, studentEntities);
+        modelMap.put(MapExcelConstants.ENTITY_LIST, excelExportEntities);
         modelMap.put(MapExcelConstants.PARAMS, params);
         modelMap.put(MapExcelConstants.FILE_NAME, "EasypoiMapExcelViewTest");
         PoiBaseView.render(modelMap, request, response, MapExcelConstants.EASYPOI_MAP_EXCEL_VIEW);

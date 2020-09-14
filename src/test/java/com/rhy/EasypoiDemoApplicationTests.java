@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @SpringBootTest
 class EasypoiDemoApplicationTests {
@@ -120,26 +118,67 @@ class EasypoiDemoApplicationTests {
          * 组装数据 - 这里主要看 {@link StudentEntity}类中的注解理解含义
          */
         //改成List<Map<String,Object>>
-        List<StudentEntity> studentEntities = new ArrayList<>(10);
+        List<Map<String,Object>> studentEntities = new ArrayList<>(10);
+        //行数据
+        Map<String,Object> studentEntity = null;
+        //学生成绩数据
+        List<Map<String,Object>> studentScoreEntities = null;
+        //学生成绩行数据
+        Map<String,Object> studentScoreEntity = null;
         for(int i=1;i<=10;i++){
-            StudentEntity studentEntity = new StudentEntity(
-                    i,
-                    "学生姓名"+i,
-                    i%2+1,
-                    LocalDate.of(1996,i,i+10),
-                    LocalDateTime.now(ZoneId.of("+8"))
-            );
+            studentEntity = new HashMap<>();
             studentEntities.add(studentEntity);
+            studentEntity.put("name","学生姓名"+i);
+            studentEntity.put("sex",i%2+1);
+            studentEntity.put("birthday",LocalDate.of(1996,i,i+10));
+            studentEntity.put("registrationDate",LocalDateTime.now(ZoneId.of("+8")));
+            //学生分数
+            studentScoreEntities = new ArrayList<>();
+            studentEntity.put("scores",studentScoreEntities);
+            studentScoreEntity = new HashMap<>();
+            studentScoreEntities.add(studentScoreEntity);
+            studentScoreEntity.put("semester","上学期");
+            studentScoreEntity.put("chinese",96+i);
+            studentScoreEntity.put("math",60+i);
+            studentScoreEntity.put("english",76+i);
+            studentScoreEntity = new HashMap<>();
+            studentScoreEntities.add(studentScoreEntity);
+            studentScoreEntity.put("semester","下学期");
+            studentScoreEntity.put("chinese",95+i);
+            studentScoreEntity.put("math",79+i);
+            studentScoreEntity.put("english",66+i);
         }
         /**
          * 组装excel字段数据 - 动态追加消除列
          */
         List<ExcelExportEntity> excelExportEntities = new ArrayList<>();
-        excelExportEntities.add(new ExcelExportEntity("学生姓名","name",40));
-//        excelExportEntities.add(new ExcelExportEntity("学生性别","sex"));
-//        excelExportEntities.add(new ExcelExportEntity("出生日期","birthday"));
-//        excelExportEntities.add(new ExcelExportEntity("进校日期","registrationDate"));
-
+        //学生姓名列
+        ExcelExportEntity excelExportNameEntity = new ExcelExportEntity("学生姓名","name",25);
+        //需要合并
+        excelExportNameEntity.setNeedMerge(true);
+        excelExportEntities.add(excelExportNameEntity);
+        //学生性别列
+        ExcelExportEntity excelExportSexEntity = new ExcelExportEntity("学生性别","sex");
+        //需要合并
+        excelExportSexEntity.setNeedMerge(true);
+        //转换枚举
+        excelExportSexEntity.setReplace(new String[]{"男_1","女_2"});
+        //字段后缀
+        excelExportSexEntity.setSuffix("生");
+        excelExportEntities.add(excelExportSexEntity);
+//        excelExportEntities.add(new ExcelExportEntity("出生日期","birthday",20));
+//        excelExportEntities.add(new ExcelExportEntity("进校日期","registrationDate",40));
+        //学生成绩列集合
+        ExcelExportEntity excelExportEntityScore = new ExcelExportEntity("学生成绩","scores");
+        excelExportEntities.add(excelExportEntityScore);
+        //成绩列标题项
+        List<ExcelExportEntity> excelExportEntityChildrens = new ArrayList<>();
+        excelExportEntityChildrens.add(new ExcelExportEntity("学期","semester"));
+        excelExportEntityChildrens.add(new ExcelExportEntity("语文","chinese"));
+        excelExportEntityChildrens.add(new ExcelExportEntity("数学","math"));
+        excelExportEntityChildrens.add(new ExcelExportEntity("英语","english"));
+        //写入成绩相关标题项
+        excelExportEntityScore.setList(excelExportEntityChildrens);
         //导出Excel文件对象
         Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("计算机一班学生","学生"),excelExportEntities,studentEntities);
         //写入文件逻辑
