@@ -32,6 +32,12 @@ import java.util.Map;
  */
 @RestController
 public class TestController {
+    /**
+     * http://127.0.0.1:8080/download
+     * @param modelMap
+     * @param request
+     * @param response
+     */
     @GetMapping("download")
     public void testDownload(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
         /**
