@@ -99,12 +99,12 @@ public class TestController {
         excelExportEntities.add(excelExportEntityScore);
         //成绩列标题项
         List<ExcelExportEntity> excelExportEntityChildrens = new ArrayList<>();
+        //写入成绩相关标题项
+        excelExportEntityScore.setList(excelExportEntityChildrens);
         excelExportEntityChildrens.add(new ExcelExportEntity("学期","semester"));
         excelExportEntityChildrens.add(new ExcelExportEntity("语文","chinese"));
         excelExportEntityChildrens.add(new ExcelExportEntity("数学","math"));
         excelExportEntityChildrens.add(new ExcelExportEntity("英语","english"));
-        //写入成绩相关标题项
-        excelExportEntityScore.setList(excelExportEntityChildrens);
 
         ExportParams params = new ExportParams("计算机一班学生","学生");
         params.setFreezeCol(2);
