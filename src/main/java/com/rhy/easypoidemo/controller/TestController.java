@@ -41,7 +41,7 @@ public class TestController {
     @GetMapping("download")
     public void testDownload(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
         /**
-         * 组装数据 - 这里主要看 {@link StudentEntity}类中的注解理解含义
+         * 组装数据
          */
         //改成List<Map<String,Object>>
         List<Map<String,Object>> studentEntities = new ArrayList<>(10);
@@ -74,6 +74,9 @@ public class TestController {
             studentScoreEntity.put("math",79+i);
             studentScoreEntity.put("english",66+i);
         }
+        /**
+         * 组装数据结束 - 相当于我们从dao层查询数据后拼装到map中
+         */
         /**
          * 组装excel字段数据 - 动态追加消除列
          */
