@@ -22,7 +22,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain=true) // 可以链式调用 setter
-public class CourseEntity {
+public class CourseEntityCollection {
     /**
      * 主键
      */
@@ -33,15 +33,10 @@ public class CourseEntity {
     @Excel(name = "课程名称",width = 25,needMerge = true)
     private String name;
     /**
-     * 老师对象
-     */
-    @ExcelEntity(id = "absent")
-    private TeacherEntity teacherEntity;
-    /**
      * 学生集合
      */
     @ExcelCollection(name = "学生")
-
-    List<StudentEntity> studentEntities;
+    @ExcelCollectionDeep(num = 1)
+    List<CourseEntityCollection> studentEntities;
 
 }

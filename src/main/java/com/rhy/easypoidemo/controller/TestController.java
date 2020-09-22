@@ -1,12 +1,16 @@
 package com.rhy.easypoidemo.controller;
 
 import cn.afterturn.easypoi.entity.vo.MapExcelConstants;
+import cn.afterturn.easypoi.entity.vo.NormalExcelConstants;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
+import cn.afterturn.easypoi.excel.export.base.ExportCommonService;
 import cn.afterturn.easypoi.view.PoiBaseView;
+import com.rhy.easypoidemo.entity.CourseEntityCollection;
 import com.rhy.easypoidemo.entity.StudentEntity;
+import com.rhy.easypoidemo.util.PoiBaseViewExt;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,13 +36,33 @@ import java.util.Map;
  */
 @RestController
 public class TestController {
+    @GetMapping("testCollectionBug")
+    public void testCollectionBug(HttpServletRequest request,HttpServletResponse response){
+        CourseEntityCollection courseEntityCollection = new CourseEntityCollection();
+        courseEntityCollection.setName("name");
+        List<CourseEntityCollection> courseEntityCollections = new ArrayList<>();
+        courseEntityCollections.add(new CourseEntityCollection().setName("name"));
+        courseEntityCollection.setStudentEntities(courseEntityCollections);
+
+        List<CourseEntityCollection> companyEntities = new ArrayList<>();
+        companyEntities.add(courseEntityCollection);
+
+        ExportParams params = new ExportParams("菜单查询","菜单管理",ExcelType.XSSF);
+        Map<String, Object> map = new HashMap<>();
+        map.put(NormalExcelConstants.DATA_LIST,companyEntities);
+        map.put(NormalExcelConstants.CLASS,CourseEntityCollection.class);
+        map.put(NormalExcelConstants.PARAMS,params);
+        map.put(NormalExcelConstants.FILE_NAME,"后台管理");
+//        PoiBaseViewExt.render(map,request,response,NormalExcelConstants.EASYPOI_EXCEL_VIEW);
+        PoiBaseViewExt.render(map,request,response,NormalExcelConstants.EASYPOI_EXCEL_VIEW);
+    }
     /**
      * http://127.0.0.1:8080/download
      * @param modelMap
      * @param request
      * @param response
      */
-    @GetMapping("download")
+    @PostMapping("download")
     public void testDownload(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
         /**
          * 组装数据
@@ -111,7 +135,7 @@ public class TestController {
 
         ExportParams params = new ExportParams("计算机一班学生","学生");
         params.setFreezeCol(2);
-        modelMap.put(MapExcelConstants.MAP_LIST, studentEntities);
+        modelMap.put(MapExcelConstants.MAP_LIST, new ArrayList<>());//studentEntities
         modelMap.put(MapExcelConstants.ENTITY_LIST, excelExportEntities);
         modelMap.put(MapExcelConstants.PARAMS, params);
         modelMap.put(MapExcelConstants.FILE_NAME, "EasypoiMapExcelViewTest");

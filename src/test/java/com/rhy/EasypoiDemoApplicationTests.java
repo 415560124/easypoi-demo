@@ -3,10 +3,7 @@ package com.rhy;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
-import com.rhy.easypoidemo.entity.CompanyEntity;
-import com.rhy.easypoidemo.entity.CourseEntity;
-import com.rhy.easypoidemo.entity.StudentEntity;
-import com.rhy.easypoidemo.entity.TeacherEntity;
+import com.rhy.easypoidemo.entity.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @SpringBootTest
 class EasypoiDemoApplicationTests {
@@ -204,6 +202,20 @@ class EasypoiDemoApplicationTests {
         //写完后关闭流
         fos.close();
     }
+    @Test
+    public void collectionBug() throws IOException {
+        CourseEntityCollection courseEntityCollection = new CourseEntityCollection();
+        courseEntityCollection.setName("name");
+        List<CourseEntityCollection> courseEntityCollections = new ArrayList<>();
+        courseEntityCollections.add(new CourseEntityCollection().setName("name"));
+        courseEntityCollection.setStudentEntities(courseEntityCollections);
 
+        List<CourseEntityCollection> companyEntities = new ArrayList<>();
+        companyEntities.add(courseEntityCollection);
+        //导出Excel文件对象
+        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("公司列表","公司"),CourseEntityCollection.class,companyEntities);
+        //写入文件逻辑
+        exportFile(workbook,"collectionBug.xls");
+    }
 
 }
