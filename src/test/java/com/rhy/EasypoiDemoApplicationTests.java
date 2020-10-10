@@ -3,6 +3,7 @@ package com.rhy;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
+import com.rhy.easypoidemo.config.ExcelExportStatisticStyler;
 import com.rhy.easypoidemo.entity.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,9 @@ class EasypoiDemoApplicationTests {
             );
             studentEntities.add(studentEntity);
         }
+        ExportParams exportParams = new ExportParams("计算机一班学生","学生");
         //导出Excel文件对象
-        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("计算机一班学生","学生"),StudentEntity.class,studentEntities);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams,StudentEntity.class,studentEntities);
         //写入文件逻辑
         exportFile(workbook,"annotation-student-demo.xls");
 
@@ -177,8 +179,10 @@ class EasypoiDemoApplicationTests {
         excelExportEntityChildrens.add(new ExcelExportEntity("英语","english"));
         //写入成绩相关标题项
         excelExportEntityScore.setList(excelExportEntityChildrens);
+        ExportParams exportParams = new ExportParams("计算机一班学生","学生");
+        exportParams.setStyle(ExcelExportStatisticStyler.class);
         //导出Excel文件对象
-        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("计算机一班学生","学生"),excelExportEntities,studentEntities);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams,excelExportEntities,studentEntities);
         //写入文件逻辑
         exportFile(workbook,"source-annotation-student-demo.xls");
     }
