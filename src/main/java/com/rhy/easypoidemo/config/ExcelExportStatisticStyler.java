@@ -32,9 +32,34 @@ public class ExcelExportStatisticStyler extends ExcelExportStylerDefaultImpl {
         }
     }
 
+    /**
+     * 字段样式
+     * @param noneStyler
+     * @param entity
+     * @return
+     */
     @Override
     public CellStyle getStyles(boolean noneStyler, ExcelExportEntity entity) {
         return borderCellStyle;
     }
 
+    /**
+     * 标题样式
+     * @param color
+     * @return
+     */
+    @Override
+    public CellStyle getTitleStyle(short color) {
+        return borderCellStyle;
+    }
+
+    /**
+     * 头部样式
+     * @param color
+     * @return
+     */
+//    @Override
+//    public CellStyle getHeaderStyle(short color) {
+//        return borderCellStyle;
+//    }
 }
