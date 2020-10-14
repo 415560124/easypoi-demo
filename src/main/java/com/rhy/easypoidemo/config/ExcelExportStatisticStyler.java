@@ -15,7 +15,7 @@ public class ExcelExportStatisticStyler extends ExcelExportStylerDefaultImpl {
 
     public ExcelExportStatisticStyler(Workbook workbook) {
         super(workbook);
-        createNumberCellStyler(false);
+        createNumberCellStyler(true);
     }
 
     private void createNumberCellStyler(boolean isWarp) {
