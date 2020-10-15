@@ -132,7 +132,7 @@ class EasypoiDemoApplicationTests {
         for(int i=1;i<=10;i++){
             studentEntity = new HashMap<>();
             studentEntities.add(studentEntity);
-            studentEntity.put("name","111111111111111111111111111111111111111111111111111111222222222222222222222222222222222222233333333333333333333333333333333333333333"+i);
+            studentEntity.put("name","哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿"+i);
             studentEntity.put("sex",i%2+1);
             studentEntity.put("birthday",LocalDate.of(1996,i,i+10));
             studentEntity.put("registrationDate",LocalDateTime.now(ZoneId.of("+8")));
@@ -157,7 +157,7 @@ class EasypoiDemoApplicationTests {
          */
         List<ExcelExportEntity> excelExportEntities = new ArrayList<>();
         //学生姓名列
-        ExcelExportEntity excelExportNameEntity = new ExcelExportEntity("学生姓名","name",3);
+        ExcelExportEntity excelExportNameEntity = new ExcelExportEntity("学生姓名","name",6);
         //需要合并
         excelExportNameEntity.setNeedMerge(true);
         excelExportEntities.add(excelExportNameEntity);
@@ -190,30 +190,54 @@ class EasypoiDemoApplicationTests {
         //导出Excel文件对象
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams,excelExportEntities,studentEntities);
 
-        //设置每个表格的列自动适应
-            //获得excel表格数
-            int sheetNum = workbook.getNumberOfSheets();
-            //遍历每个表格
-            for(int i=0;i<sheetNum;i++){
-                Sheet sheet = workbook.getSheetAt(i);
-                setSizeColumn(sheet, 6);
-                //获得行数
-                int rowNum = sheet.getLastRowNum();
-                //遍历行
-                for(int j=0;j<rowNum;j++){
-                    Row row = sheet.getRow(j);
-                    //获得字段数
-                    int cellNum = row.getLastCellNum();
-                    //行高
-                    int rowHeight = 0;
-                    //遍历字段
-                    for(int x=0;x<cellNum;x++){
-                        Cell cell = row.getCell(x);
-                        String cellValue = cell.getStringCellValue();
+        /**
+         * 设置每个表格的列自动适应
+         */
+        //最大高度
+        short maxHeight = 32767;
+        //
+        //获得excel表格数
+        int sheetNum = workbook.getNumberOfSheets();
+        //遍历每个表格
+        for(int i=0;i<sheetNum;i++){
+            Sheet sheet = workbook.getSheetAt(i);
+            //获得行数
+            int rowNum = sheet.getLastRowNum();
+            //遍历行 - 开始行数应该跳过标题行
+            for(int j=3;j<rowNum;j++){
+                //获得行对象
+                Row row = sheet.getRow(j);
+                //获得字段数
+                int cellNum = row.getLastCellNum();
+                //当前行高
+                int nowRowHeight = row.getHeight();
+                //遍历字段
+                for(int x=0;x<cellNum;x++){
+                    //当前单元格宽度
+                    int nowWidth = sheet.getColumnWidth(x) / 256;
+                    //当前单元格一行能够容纳的数据个数 - 每个字符按长度3分配
+                    int cellRowCharNum = nowWidth/3;
+                    //获得单元格操作对象
+                    Cell cell = row.getCell(x);
+                    //获得单元格值
+                    String cellValue = cell.getStringCellValue();
+                    //计算一下预计多少行 - 向上取整
+                    Double planRowNumDouble = Math.ceil(cellValue.length()/cellRowCharNum);
+                    int planRowNumInt = planRowNumDouble.intValue();
+                    //需要的行高度
+                    int needRowHeight = planRowNumInt*256;
+                    //需要的行高度 > 最大的行高度
+                    if(needRowHeight > nowRowHeight){
+                        //需要的行高度
+                        if(needRowHeight > maxHeight){
+                            needRowHeight = maxHeight;
+                        }
+                        nowRowHeight = needRowHeight;
                     }
                 }
+                row.setHeight((short)nowRowHeight);
             }
-
+        }
         //写入文件逻辑
         exportFile(workbook,"source-annotation-student-demo.xls");
     }
